@@ -17,6 +17,16 @@ if [[ $(id -u) != 0 ]] ; then
     exit 1
 fi
 
+if [ -v ${KTEST_DEBOOTSTRAP_SYSTEM} ]; then
+    echo "Using system debootstrap"
+    checkdep debootstrap
+    debootstrap=debootstrap
+else
+    export DEBOOTSTRAP_DIR=$ktest_dir/debootstrap
+    debootstrap=$ktest_dir/debootstrap/debootstrap
+fi
+
+
 checkdep fallocate util-linux
 checkdep mkfs.ext4 e2fsprogs
 
@@ -148,7 +158,8 @@ export LANG=C
 
 _chroot()
 {
-    PATH=/usr/sbin:/usr/bin:/sbin:/bin chroot "$@"
+    chroot=$(which chroot)
+    PATH=/usr/sbin:/usr/bin:/sbin:/bin $chroot "$@"
 }
 
 update_files()
@@ -279,7 +290,9 @@ cmd_create()
 	exit 1
     fi
 
-    (cd "$ktest_dir"; git submodule update --init debootstrap)
+    if [[ -z ${KTEST_DEBOOTSTRAP_SYSTEM+x} ]]; then
+        (cd "$ktest_dir"; git submodule update --init debootstrap)
+    fi
 
     MNT=$(mktemp --tmpdir -d $(basename "$0")-XXXXXXXXXX)
     trap 'umount_image; rm "$ktest_image"' EXIT
@@ -288,7 +301,7 @@ cmd_create()
     mkfs.ext4 -F "$ktest_image"
     mount "$ktest_image" "$MNT"
 
-    DEBOOTSTRAP_DIR=$ktest_dir/debootstrap $debootstrap	\
+    $debootstrap	\
 	--no-check-gpg					\
 	--arch="$DEBIAN_ARCH"				\
 	--exclude=$(join_by , "${EXCLUDE[@]}")		\
