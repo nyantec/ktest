@@ -1,7 +1,12 @@
 {
   description = "Kernel Virtual Machine Testing Tools";
 
-  outputs = { self, nixpkgs }:
+  inputs.flake-compat = {
+    url = "github:edolstra/flake-compat";
+    flake = false;
+  };
+
+  outputs = { self, nixpkgs, ... }:
     let
       systems =
         [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
