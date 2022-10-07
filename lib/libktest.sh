@@ -221,7 +221,7 @@ ktest_kgdb()
 
 ktest_mon()
 {
-    exec socat UNIX-CONNECT:"$ktest_out/vm/on" STDIO
+    exec socat UNIX-CONNECT:"$ktest_out/vm/mon" STDIO
     exec nc "$ktest_out/vm/mon"
 }
 
@@ -234,6 +234,7 @@ ktest_sysrq()
 
 save_env()
 {
+    ktest_test=$(readlink -f $ktest_test)
     set |grep -v "^PATH=" > "$ktest_out/vm/env_tmp"
     readonly_variables="$(readonly | cut -d= -f1 | cut -d' ' -f3)"
     for variable in ${readonly_variables}
@@ -415,6 +416,8 @@ start_vm()
 	fallocate -l "$size" "$file"
 	qemu_pmem mem-path="$file",size=$size
     done
+
+    log_verbose "Qemu Command: ${qemu_cmd[@]}"
 
     set +o errexit
     save_env
