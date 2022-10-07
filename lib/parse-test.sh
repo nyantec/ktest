@@ -1,7 +1,11 @@
 
 parse_test_deps()
 {
+    # DISABLE variable checks for test eval, to print propper errors
+    set +u
+
     #export ktest_crashdump
+    export KTEST_TEST_LIB="$ktest_dir/lib/ktest/test-libs.sh"
     eval $("$ktest_test" deps)
 
     parse_arch "$ktest_arch"
@@ -37,4 +41,7 @@ parse_test_deps()
 
 	ktest_tests="$ktest_testargs"
     fi
+
+    # ENABLE variable chesk
+    set -u
 }

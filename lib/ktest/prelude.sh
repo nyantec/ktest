@@ -1,6 +1,6 @@
 # Basic libs for ktest tests:
 
-. $(dirname $(readlink -e "${BASH_SOURCE[0]}"))/../lib/common.sh
+. $(dirname $(readlink -e "${BASH_SOURCE[0]}"))/../common.sh
 
 if [[ ! -v ktest_verbose ]]; then
     ktest_verbose=0
