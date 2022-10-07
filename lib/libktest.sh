@@ -160,7 +160,7 @@ ktest_boot()
     ktest_interactive=1
     ktest_kgdb=1
 
-    ktest_run "$ktest_dir/boot.ktest" "$@"
+    ktest_run "$ktest_dir/lib/boot.ktest" "$@"
 }
 
 ktest_ssh()

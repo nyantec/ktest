@@ -251,7 +251,7 @@ cmd_run()
 
 cmd_boot()
 {
-    cmd_run "$ktest_dir/boot.ktest"
+    cmd_run "$ktest_dir/lib/boot.ktest"
 }
 
 cmd_oldconfig()

@@ -1,13 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-. $(dirname $(readlink -e "${BASH_SOURCE[0]}"))/tests/test-libs.sh
+. $KTEST_TEST_LIB
 
 config-mem 2G
 config-scratch-devs 4G
 config-pmem-devs 4G
 config-timeout 600000
 
-main()
+test_boot()
 {
+    echo "test"
     exit 0
 }
+
+main "$@"
