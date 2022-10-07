@@ -1,8 +1,13 @@
+ktest_extra_deps=()
+
+
 
 parse_test_deps()
 {
     # DISABLE variable checks for test eval, to print propper errors
     set +u
+
+    export ktest_extra_dep=$(save_extra_deps)
 
     #export ktest_crashdump
     export KTEST_TEST_LIB="$ktest_dir/lib/ktest/test-libs.sh"
@@ -44,4 +49,35 @@ parse_test_deps()
 
     # ENABLE variable chesk
     set -u
+}
+
+ktest_config_args="m:K:A:q:"
+parse_config_arg()
+{
+    local arg=$1
+
+    case $arg in
+        m)
+            ktest_extra_deps+=("config-mem $OPTARG")
+            ;;
+        K)
+            ktest_extra_deps+=("require-kernel-config $OPTARG")
+            ;;
+        A)
+            ktest_extra_deps+=("require-kernel-append $OPTARG")
+            ;;
+        q)
+            ktest_extra_deps+=("require-qemu-append $OPTARG")
+            ;;
+    esac
+}
+
+save_extra_deps()
+{
+    get_tmpdir
+    echo "" > $ktest_tmp/extra_deps
+    for l in "${ktest_extra_deps[@]}"; do
+        echo "$l" >> $ktest_tmp/extra_deps
+    done
+    echo $ktest_tmp/extra_deps
 }

@@ -248,8 +248,11 @@ main()
     local arg=$1
     shift
 
+
     case $arg in
 	deps)
+        . $ktest_extra_dep
+
 	    echo "ktest_arch=$ktest_arch"
 	    echo "ktest_cpus=$ktest_cpus"
 	    echo "ktest_mem=$ktest_mem"
