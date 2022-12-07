@@ -214,7 +214,7 @@ checkdep()
 		    echo ", installing $package:"
 		    sudo apt-get -qq install --no-install-recommends "$package"
 		else
-		    echo ", please install"
+		    echo ", please install KTEST"
 		    exit 1
 	fi
     fi

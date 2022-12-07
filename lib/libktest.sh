@@ -250,11 +250,12 @@ get_unused_port()
 {
     # This probably shouldn't be needed, but I was unable to determine which
     # part of the pipeline was returning an error:
-    set +o pipefail
-    comm -23 --nocheck-order \
-	<(seq 10000 65535) \
-	<(ss -tan | awk '{print $4}' | cut -d':' -f2 | grep '[0-9]\{1,5\}' | sort -n | uniq) \
-	| shuf | head -n1
+ #   set +o pipefail
+ #   comm -23 --nocheck-order \
+	#<(seq 10000 65535) \
+	#<(ss -tan | awk '{print $4}' | cut -d':' -f2 | grep '[0-9]\{1,5\}' | sort -n | uniq) \
+	#| shuf | head -n1
+	echo 53041
 }
 
 start_vm()
@@ -301,7 +302,7 @@ start_vm()
 	    qemu_cmd+=(-cpu host -machine type=q35,accel=kvm,nvdimm=on)
 	    ;;
 	aarch64)
-	    qemu_cmd+=(-cpu host -machine type=virt,gic-version=max,accel=kvm)
+	    qemu_cmd+=(-cpu host -machine type=virt,gic-version=max) # accel=kvm and hvf on macos
 	    ;;
 	mips)
 	    qemu_cmd+=(-cpu 24Kf -machine malta)

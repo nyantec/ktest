@@ -71,6 +71,6 @@ in stdenv.mkDerivation rec {
     homepage = "https://wiki.debian.org/Debootstrap";
     license = licenses.mit;
     maintainers = with maintainers; [ marcweber ];
-    platforms = platforms.linux;
+    platforms = platforms.linux ++ platforms.darwin;
   };
 }

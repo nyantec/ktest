@@ -9,7 +9,11 @@ KTEST=$ktest_dir/ktest
 
 . "$ktest_dir/lib/libktest.sh"
 
-checkdep gcc
+if [[ -z "$KTEST_USE_CLANG" ]]; then
+    checkdep gcc
+else
+    checkdep clang
+fi
 checkdep make
 checkdep bison
 checkdep flex
@@ -93,7 +97,7 @@ ktest_kernel_source=$(readlink -e "$ktest_kernel_source")
 ktest_kernel_build="$ktest_out/kernel_build.$ktest_arch"
 mkdir -p "$ktest_kernel_build"
 
-if [[ -n $CROSS_COMPILE ]]; then
+if [[ -n $CROSS_COMPILE  && -z $KTEST_USE_CLANG ]]; then
     checkdep "$ARCH_TRIPLE-gcc" "gcc-$ARCH_TRIPLE"
 fi
 
@@ -110,6 +114,10 @@ do_make()
     if [[ -n $CROSS_COMPILE ]]; then
 	export ARCH="$KERNEL_ARCH"
 	export CROSS_COMPILE="$ARCH_TRIPLE-"
+    fi
+
+    if [[ -n $KTEST_USE_CLANG ]]; then
+        MAKEARGS+="LLVM=1"
     fi
 
     make --jobs="$ktest_njobs"			\
@@ -222,7 +230,7 @@ build_kernel()
     do_make modules_install
 
     local kernel_version=$(cat "$ktest_kernel_build/include/config/kernel.release")
-    depmod -b "$ktest_kernel_binary/" -v $kernel_version
+    #depmod -b "$ktest_kernel_binary/" -v $kernel_version
 }
 
 cmd_run()
@@ -269,6 +277,16 @@ cmd_config()
 cmd_help()
 {
     usage
+}
+
+cmd_build()
+{
+    build_kernel $@
+}
+
+cmd_make()
+{
+    do_make $@
 }
 
 if [[ $(type -t "cmd_$CMD") == function ]]; then

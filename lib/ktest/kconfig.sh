@@ -38,7 +38,7 @@ case $ktest_arch in
 
 	require-kernel-append console=hvc0
 	;;
-    aarch64)
+    aarch64|arm64)
 	require-kernel-config PCI_HOST_GENERIC
 
 	have_virtio=1
